@@ -12,7 +12,7 @@ Lightweight Lua error catcher and stack-trace formatter for World of Warcraft 1.
 - **Protected Call Logging:** Captures `ADDON_ACTION_BLOCKED` and `ADDON_ACTION_FORBIDDEN` events with addon and function context.
 - **Session & Deduplication:** Groups identical errors within the same session using an occurrence counter (`counter`) and timestamp (`time`).
 - **SavedVariables Safety:** Enforces the WoW 1.12.1 SavedVariables string-length limit (<= 980 bytes) and configurable history cap (`BugGrabberDB.limit`, 10–100 errors).
-- **BugSack Integration:** Buffers early startup errors in `BugGrabber.bugsackErrors` until `BugSack` initializes, and exposes `GetDB`, `GetSave`, `ToggleSave`, `GetLimit`, and `SetLimit` plus `BugGrabber_BugGrabbed` / `BugGrabber_BugGrabbedAgain` AceEvent-2.0 events.
+- **BugSack Integration:** Buffers early startup errors in `BugGrabber.bugsackErrors` until [`BugSack`](https://github.com/mycoursehqazsedc00-boop/BugSack) initializes, and exposes `GetDB`, `GetSave`, `ToggleSave`, `GetLimit`, and `SetLimit` plus `BugGrabber_BugGrabbed` / `BugGrabber_BugGrabbedAgain` AceEvent-2.0 events.
 - **Built-in Slash Command:** Always available via `/buggrabber` even without `BugSack`:
   - `/buggrabber <index>` — Print full details for error `<index>`.
   - `/buggrabber list` — List up to the 10 most recent errors with occurrence counts.
@@ -31,6 +31,7 @@ Lightweight Lua error catcher and stack-trace formatter for World of Warcraft 1.
 - **Hardened Event & Frame Hooks:** Added `nil`-safe formatting for `ADDON_ACTION_BLOCKED` / `ADDON_ACTION_FORBIDDEN`, trimmed `SetLimit` against the floored `BugGrabberDB.limit`, and guarded `ScriptErrors_Message` / `ScriptErrors` existence.
 - **Reduced String Allocations:** Replaced per-line string concatenation in `GrabError` with a reused `traceParts` buffer and `table.concat`.
 - **Clean Truncation Marker:** Truncates oversized errors (> 980 bytes) at 970 characters with `\n...  ---` so truncated entries remain clearly marked.
+- **Improved BugSack Startup & Reset Sync:** Deferred `bugsackErrors` cleanup in `PlayerLogin()` when `BugSack` is loaded so addons loading after `BugSack` are still captured cleanly by `BugSack:OnEnable()`, and delegated `/buggrabber clear` to `BugSack:Reset()` when active.
 
 ## Credits
 
