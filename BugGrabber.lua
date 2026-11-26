@@ -325,6 +325,10 @@ function BugGrabber.PrintLoadError(index)
 		end
 		return
 	elseif cmd == "clear" then
+		if BugSack and type(BugSack.Reset) == "function" then
+			BugSack:Reset()
+			return
+		end
 		BugGrabber.errors = {}
 		if BugGrabberDB and type(BugGrabberDB) == "table" then
 			BugGrabberDB.errors = {}
@@ -377,30 +381,29 @@ end
 
 function BugGrabber.PlayerLogin()
 	-- On player login, check to see whether we had load time errors and
-	-- display them in the chat frame if we can't find BugSack. We cheat
-	-- by letting BugSack reset BugGrabber.bugsackErrors so we can just
-	-- check that.
-	local err = BugGrabber.bugsackErrors
-	if err and type(err) == "table" and table.getn(err) > 0 then
-		local num = table.getn(err)
-		if num > 4 then
-			DEFAULT_CHAT_FRAME:AddMessage(string.format(STARTUP_ERRORS_MANY, num))
-			temporaryList = {}
-			for _, v in ipairs(err) do
-				table.insert(temporaryList, v)
-			end
-		else
-			DEFAULT_CHAT_FRAME:AddMessage(string.format(STARTUP_ERRORS, num))
-			for k, e in ipairs(err) do
-				DEFAULT_CHAT_FRAME:AddMessage(tostring(k) .. ". " .. e.message)
+	-- display them in the chat frame if we can't find BugSack. If BugSack
+	-- is loaded, leave bugsackErrors for BugSack:OnEnable() to swipe.
+	if not BugSack then
+		local err = BugGrabber.bugsackErrors
+		if err and type(err) == "table" and table.getn(err) > 0 then
+			local num = table.getn(err)
+			if num > 4 then
+				DEFAULT_CHAT_FRAME:AddMessage(string.format(STARTUP_ERRORS_MANY, num))
+				temporaryList = {}
+				for _, v in ipairs(err) do
+					table.insert(temporaryList, v)
+				end
+			else
+				DEFAULT_CHAT_FRAME:AddMessage(string.format(STARTUP_ERRORS, num))
+				for k, e in ipairs(err) do
+					DEFAULT_CHAT_FRAME:AddMessage(tostring(k) .. ". " .. e.message)
+				end
 			end
 		end
+		BugGrabber.bugsackErrors = nil
 	end
 
 	RegisterSlashCommand()
-
-	-- No need to wait for BugSack to load anymore
-	BugGrabber.bugsackErrors = nil
 end
 
 function BugGrabber.OnEvent()

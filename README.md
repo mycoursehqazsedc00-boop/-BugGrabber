@@ -1,6 +1,8 @@
 # !BugGrabber (Vanilla 1.12.1 / Turtle WoW)
 
-Lightweight Lua error catcher and stack-trace formatter for World of Warcraft 1.12.1 (strict Lua 5.0), designed as a clean, drop-in upgrade over upstream **BugGrabber v2.1.1** with full **BugSack** compatibility.
+Lightweight Lua error catcher and stack-trace formatter for World of Warcraft 1.12.1 (strict Lua 5.0), designed as a clean, drop-in upgrade over upstream **BugGrabber v2.1.1** with full **[`BugSack`](https://github.com/mycoursehqazsedc00-boop/BugSack)** compatibility.
+
+> **Companion UI Addon:** [`BugSack`](https://github.com/mycoursehqazsedc00-boop/BugSack) (optional error viewer, sound/chat alerts, and FuBar plugin).
 
 ## Client DLL Requirements
 
